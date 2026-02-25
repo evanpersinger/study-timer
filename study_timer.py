@@ -224,10 +224,13 @@ class StudyTimer:
         self.is_running = True
         self.start_button.config(text="Pause")
         
-        # Set session start time if starting a study session
-        if self.is_study_time and self.session_start_time is None:
-            self.session_start_time = time.time()
-            self.play_audio()  # Start audio for study session
+        # Handle study session audio
+        if self.is_study_time:
+            # Set session start time if starting a fresh study session
+            if self.session_start_time is None:
+                self.session_start_time = time.time()
+            # Always play audio when resuming/starting study time
+            self.play_audio()
         
         # Show break button during study sessions
         if self.is_study_time:
