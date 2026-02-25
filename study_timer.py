@@ -516,10 +516,10 @@ class StudyTimer:
                 with open(self.data_file, 'r') as f:
                     all_data = json.load(f)
             
-            # Update today's data
+            # Update today's data (round total_study_time to 2 decimal places)
             all_data[self.today] = {
-                'session_count': self.session_count,
-                'total_study_time': self.total_study_time,
+                'session_count': round(self.session_count, 2),
+                'total_study_time': round(self.total_study_time, 2),
                 'last_updated': datetime.now().isoformat()
             }
             
