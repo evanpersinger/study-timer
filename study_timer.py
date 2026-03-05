@@ -52,6 +52,7 @@ class StudyTimer:
         # Audio playback
         self.audio_file = "binaural_beat.mp3"
         self.audio_process = None
+        self.audio_enabled = True  # Toggle for 40hz beat
         
         # Session tracking
         self.session_count = 0
@@ -171,6 +172,10 @@ class StudyTimer:
         self.study_button = ttk.Button(control_frame, text="Start Study", command=self.start_study_timer)
         self.study_button.grid(row=0, column=3, padx=5)
         self.study_button.grid_remove()  # Hide initially
+
+        # Audio toggle button - top right
+        self.audio_toggle_button = ttk.Button(self.root, text="40hz Beat: On", command=self.toggle_audio)
+        self.audio_toggle_button.place(relx=1.0, rely=0.0, anchor='ne', x=-5, y=5)
         
         
     
@@ -414,8 +419,21 @@ class StudyTimer:
         """Stop playing notification sound"""
         self.playing_sound = False
     
+    def toggle_audio(self):
+        """Toggle the 40hz binaural beat on or off"""
+        self.audio_enabled = not self.audio_enabled
+        if self.audio_enabled:
+            self.audio_toggle_button.config(text="40hz Beat: On")
+            if self.is_running and self.is_study_time:
+                self.play_audio()
+        else:
+            self.audio_toggle_button.config(text="40hz Beat: Off")
+            self.stop_audio()
+
     def play_audio(self):
         """Start playing the binaural beat audio file"""
+        if not self.audio_enabled:
+            return
         if self.audio_process is None and os.path.exists(self.audio_file):
             try:
                 if platform.system() == "Darwin":  # macOS
