@@ -1,6 +1,6 @@
 # Study Timer
 
-A simple, effective Pomodoro-style study timer built with Python and tkinter. Perfect for students who need focused study sessions with comprehensive progress tracking and integrated Spotify background music!
+A simple, effective Pomodoro-style study timer built with Python and tkinter. Perfect for students who need focused study sessions with comprehensive progress tracking and binaural beat audio for focus.
 
 ## Features
 
@@ -108,7 +108,7 @@ cd study_timer
 # Setup data file (first time only)
 cp data/data_example.json data/data.json
 
-# Install dependencies (includes Spotify integration)
+# Install dependencies
 uv pip install -r requirements.txt
 
 # Run the timer

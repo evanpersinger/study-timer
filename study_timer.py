@@ -305,7 +305,7 @@ class StudyTimer:
         self.time_remaining = self.study_duration * 60
         
         self.start_button.config(text="Pause")
-        self.start_timer()  # This will call play_spotify() internally
+        self.start_timer()
         self.update_display()
     
     def reset_timer(self):
