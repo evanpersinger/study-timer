@@ -14,15 +14,10 @@ import subprocess
 import os
 import json
 from datetime import datetime
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
 
 # Import winsound only on Windows
 if platform.system() == "Windows":
     import winsound
-
 
 
 class StudyTimer:
@@ -137,18 +132,16 @@ class StudyTimer:
         reference_frame.bind("<Leave>", lambda e: self.reference_label.config(bg='black'))
         self.break_timer_label = ttk.Label(timer_frame, text="05:00", font=("Arial", 32, "bold"))
         self.break_timer_label.grid(row=1, column=1, padx=(20, 0))
-        
-        
+
         # Preset buttons
         preset_frame = ttk.Frame(main_frame)
         preset_frame.grid(row=3, column=0, columnspan=2, pady=(0, 20))
         
-        ttk.Button(preset_frame, text="25 min study / 5 min break", # 25 min button
+        ttk.Button(preset_frame, text="25 min study / 5 min break",
                   command=self.set_25_5).grid(row=0, column=0, padx=5)
-        ttk.Button(preset_frame, text="50 min study / 10 min break", # 50 min button
+        ttk.Button(preset_frame, text="50 min study / 10 min break",
                   command=self.set_50_10).grid(row=0, column=1, padx=5)
-        
-        
+
         # Test button for quick testing
         # uncomment to enable test button
         # ttk.Button(preset_frame, text="TEST (5 sec)", 
@@ -158,27 +151,25 @@ class StudyTimer:
         control_frame = ttk.Frame(main_frame)
         control_frame.grid(row=4, column=0, columnspan=2, pady=(0, 20))
         
-        self.start_button = ttk.Button(control_frame, text="Start", command=self.toggle_timer) # Start button
+        self.start_button = ttk.Button(control_frame, text="Start", command=self.toggle_timer)
         self.start_button.grid(row=0, column=0, padx=5)
         
-        ttk.Button(control_frame, text="Reset", command=self.reset_timer).grid(row=0, column=1, padx=5) # Reset button
+        ttk.Button(control_frame, text="Reset", command=self.reset_timer).grid(row=0, column=1, padx=5)
         
         # Break button (initially hidden)
         self.break_button = ttk.Button(control_frame, text="Start Break", command=self.start_break_timer)
         self.break_button.grid(row=0, column=2, padx=5)
-        self.break_button.grid_remove()  # Hide initially
+        self.break_button.grid_remove()
         
         # Study button (initially hidden)
         self.study_button = ttk.Button(control_frame, text="Start Study", command=self.start_study_timer)
         self.study_button.grid(row=0, column=3, padx=5)
-        self.study_button.grid_remove()  # Hide initially
+        self.study_button.grid_remove()
 
         # Audio toggle button - top right
         self.audio_toggle_button = ttk.Button(self.root, text="40hz Beat: On", command=self.toggle_audio)
         self.audio_toggle_button.place(relx=1.0, rely=0.0, anchor='ne', x=-5, y=5)
-        
-        
-    
+
     def set_25_5(self):
         """Set timer to 25 minute study, 5 minute break"""
         if not self.is_running:
@@ -219,12 +210,6 @@ class StudyTimer:
         if self.timer_thread is not None and self.timer_thread.is_alive():
             # Wait up to 2 seconds for the thread to exit (enough time to finish current sleep)
             self.timer_thread.join(timeout=2.0)
-            # Double-check the thread is actually dead before proceeding
-            if self.timer_thread.is_alive():
-                # Thread is still alive, wait a bit more and check is_running flag
-                time.sleep(0.2)
-                # If is_running was set to False, the thread should exit on next loop check
-                # We'll proceed but the old thread should stop when it sees is_running is False
         
         self.is_running = True
         self.start_button.config(text="Pause")
@@ -248,14 +233,13 @@ class StudyTimer:
         """Pause the timer"""
         self.is_running = False
         self.start_button.config(text="Start")
-        self.break_button.grid_remove()  # Hide break button when paused
+        self.break_button.grid_remove()
         self.stop_sound()
         self.stop_audio()
     
     def stop_timer(self):
         """Stop the timer and sound only"""
         self.is_running = False
-        self.playing_sound = False
         self.stop_sound()
         self.stop_audio()
         
@@ -268,10 +252,9 @@ class StudyTimer:
     
     def start_break_timer(self):
         """Start the break timer when user clicks the break button"""
-        self.break_button.grid_remove()  # Hide the break button
-        self.playing_sound = False  # Stop the notification sound
+        self.break_button.grid_remove()
         self.stop_sound()
-        self.stop_audio()  # Stop audio during break
+        self.stop_audio()
         
         # Add partial session time to total study time before switching to break
         # Note: This does NOT count as a full session - only tracks actual study time
@@ -284,14 +267,12 @@ class StudyTimer:
         self.is_study_time = False
         self.time_remaining = self.break_duration * 60
         
-        self.start_button.config(text="Pause")
         self.start_timer()
         self.update_display()
     
     def start_study_timer(self):
         """Start the study timer when user clicks the study button"""
-        self.study_button.grid_remove()  # Hide the study button
-        self.playing_sound = False  # Stop the notification sound
+        self.study_button.grid_remove()
         self.stop_sound()
         
         # Add partial session time to total study time before starting new study session
@@ -304,7 +285,6 @@ class StudyTimer:
         self.is_study_time = True
         self.time_remaining = self.study_duration * 60
         
-        self.start_button.config(text="Pause")
         self.start_timer()
         self.update_display()
     
@@ -318,10 +298,10 @@ class StudyTimer:
         self.is_study_time = True
         self.time_remaining = self.study_duration * 60
         self.start_button.config(text="Start")
-        self.break_button.grid_remove()  # Hide break button
-        self.study_button.grid_remove()  # Hide study button
+        self.break_button.grid_remove()
+        self.study_button.grid_remove()
         self.stop_sound()
-        self.stop_audio()  # Stop audio when resetting
+        self.stop_audio()
         self.update_display()
     
     def timer_loop(self):
@@ -345,7 +325,7 @@ class StudyTimer:
             # Study session completed
             self.session_count += 1
             self.total_study_time += self.study_duration
-            self.save_data()  # Save data after each study session
+            self.save_data()
             self.stop_audio()  # Stop the binaural beat when study session ends
             
             # Reset session start time since session completed naturally
@@ -484,8 +464,6 @@ class StudyTimer:
             partial_session_credit = elapsed_minutes / self.study_duration
             self.session_count += partial_session_credit
             
-            print(f"Added {elapsed_minutes:.2f} minutes and {partial_session_credit:.2f} session credit")
-            
             # Save the updated data
             self.save_data()
             
@@ -498,7 +476,6 @@ class StudyTimer:
             # Create data directory if it doesn't exist
             if not os.path.exists(self.data_dir):
                 os.makedirs(self.data_dir)
-                print(f"Created data directory: {self.data_dir}")
             
             # Load data
             if os.path.exists(self.data_file):
@@ -510,20 +487,8 @@ class StudyTimer:
                     today_data = all_data[self.today]
                     self.session_count = today_data.get('session_count', 0)
                     self.total_study_time = today_data.get('total_study_time', 0)
-                    print(f"Loaded today's data: {self.session_count} sessions, {self.total_study_time} minutes")
-                else:
-                    print(f"No data found for today ({self.today}), starting fresh")
-                    self.session_count = 0
-                    self.total_study_time = 0
-            else:
-                print(f"No data file found, starting fresh")
-                self.session_count = 0
-                self.total_study_time = 0
         except Exception as e:
             print(f"Error loading data: {e}")
-            # Start fresh if there's an error
-            self.session_count = 0
-            self.total_study_time = 0
     
     def save_data(self):
         """Save today's study data to file"""
@@ -544,27 +509,19 @@ class StudyTimer:
             # Save all data back to file
             with open(self.data_file, 'w') as f:
                 json.dump(all_data, f, indent=2)
-            print(f"Saved today's data: {self.session_count} sessions, {self.total_study_time} minutes")
         except Exception as e:
             print(f"Error saving data: {e}")
-    
-    
-    
+
     def on_closing(self):
         """Handle window closing - stop all sounds and threads"""
         self.is_running = False
         self.playing_sound = False
         self.stop_audio()
-        self.save_data()  # Save data before closing
+        self.save_data()
         self.root.destroy()
-    
-    
+
     def update_display(self):
         """Update the timer display"""
-        # Always keep Study on left, Break on right
-        self.active_label.config(text="Study")
-        self.reference_label.config(text="Break")
-        
         if self.is_study_time:
             # Study mode - show study countdown on left, break duration on right
             minutes = int(self.time_remaining // 60)
@@ -583,9 +540,7 @@ class StudyTimer:
             minutes = int(self.time_remaining // 60)
             seconds = int(self.time_remaining % 60)
             self.break_timer_label.config(text=f"{minutes:02d}:{seconds:02d}")
-    
-    
-    
+
     def run(self):
         """Start the application"""
         self.root.mainloop()
@@ -594,10 +549,6 @@ class StudyTimer:
 def main():
     """Main function to run the study timer"""
     print("Starting Study Timer...")
-    print("Available presets:")
-    print("- 25 / 5 ")
-    print("- 50 / 10 ")
-    print()
     
     app = StudyTimer()
     app.run()

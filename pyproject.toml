@@ -1,0 +1,7 @@
+[project]
+name = "study-timer"
+version = "0.1.0"
+description = "Pomodoro-style study timer with a 40Hz binaural beat and local session tracking"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []

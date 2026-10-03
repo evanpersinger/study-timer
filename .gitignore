@@ -10,3 +10,12 @@ __pycache__/
 data/data.json
 issues.txt
 .cache
+
+# Python
+*.pyc
+
+# Secrets
+*.pem
+*.key
+serviceAccountKey.json
+credentials.json

@@ -16,7 +16,7 @@ All daily data is stored in a single JSON file:
 
 2. **Run the Study Timer:**
    ```bash
-   python study_timer.py
+   uv run study_timer.py
    ```
 
 The app will automatically create and use your personal `data.json` file for tracking your study sessions. No manual setup required after the first run!
@@ -44,7 +44,7 @@ The file contains all days organized by date:
 - **Daily Reset**: Each day starts fresh with 0 sessions and 0 minutes
 - **Historical Data**: Previous days' data is preserved in the same file
 - **Automatic Updates**: Data is updated automatically when you complete study sessions
-- **Partial Session Tracking**: If you pause or reset mid-session, partial study time is automatically added
+- **Partial Session Tracking**: If you reset or start the break early, the partial study time is automatically added
 - **Data Persistence**: All data is saved automatically and persists between app sessions
 - **Real-time Display**: Your current day's progress is shown live in the app interface
 - **Automatic Loading**: Data is loaded automatically when you start the app
@@ -73,8 +73,7 @@ echo '{}' > data/data.json
 
 ### Data Integrity
 - The app automatically creates the data directory if it doesn't exist
-- If the data file becomes corrupted, the app will start fresh for that day
-- All data operations are atomic - either the save succeeds completely or fails safely
+- If the data file becomes corrupted, the app starts at 0 for the day but can't save until you fix or reset the file
 
 ## Privacy
 
