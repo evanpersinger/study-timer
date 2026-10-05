@@ -19,6 +19,9 @@ from datetime import datetime
 if platform.system() == "Windows":
     import winsound
 
+STUDY_BG = '#1b5e20'  # dark green
+BREAK_BG = '#b71c1c'  # dark red
+
 
 class StudyTimer:
     def __init__(self):
@@ -74,16 +77,16 @@ class StudyTimer:
         main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         
         # Configure dark theme for ttk widgets
-        style = ttk.Style()
-        style.theme_use('clam')
-        style.configure('TLabel', background='black', foreground='white')
-        style.configure('TFrame', background='black')
-        style.configure('TButton', background='gray20', foreground='white')
-        style.configure('TLabelFrame', background='black', foreground='white')
-        
+        self.style = ttk.Style()
+        self.style.theme_use('clam')
+        self.style.configure('TLabel', background='black', foreground='white')
+        self.style.configure('TFrame', background='black')
+        self.style.configure('TButton', background='black', foreground='white')
+        self.style.configure('TLabelFrame', background='black', foreground='white')
+
         # Configure custom button hover effect with ring/border
-        style.configure('TButton', relief='flat', borderwidth=1)
-        style.map('TButton',
+        self.style.configure('TButton', relief='flat', borderwidth=1)
+        self.style.map('TButton',
                   background=[('active', 'gray30')],  # Slightly lighter background on hover
                   foreground=[('active', 'white')],   # Keep white text
                   relief=[('active', 'solid')],        # Solid border on hover
@@ -520,8 +523,16 @@ class StudyTimer:
         self.save_data()
         self.root.destroy()
 
+    def apply_background(self):
+        """Green background during study time, red during break time"""
+        bg = STUDY_BG if self.is_study_time else BREAK_BG
+        self.root.configure(bg=bg)
+        self.style.configure('TFrame', background=bg)
+        self.style.configure('TLabel', background=bg)
+
     def update_display(self):
         """Update the timer display"""
+        self.apply_background()
         if self.is_study_time:
             # Study mode - show study countdown on left, break duration on right
             minutes = int(self.time_remaining // 60)
