@@ -28,7 +28,7 @@ uv run study_timer.py
 ## How to use
 
 1. Pick a preset and click Start
-2. When the study timer ends, click Start Break
+2. When the study timer ends, a sound plays until you click Stop or Start Break
 3. When the break ends, a sound plays until you click Start Study
 4. Pause holds the timer. Reset starts over, and the partial study time still counts
 
