@@ -19,6 +19,9 @@ from datetime import datetime
 if platform.system() == "Windows":
     import winsound
 
+# Folder this script lives in, so files are found no matter where it's run from
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 STUDY_BG = '#1b5e20'  # dark green
 BREAK_BG = '#b71c1c'  # dark red
 
@@ -48,7 +51,7 @@ class StudyTimer:
         self.playing_sound = False # indicates whether the sound is playing
         
         # Audio playback
-        self.audio_file = "binaural_beat.mp3"
+        self.audio_file = os.path.join(BASE_DIR, "binaural_beat.mp3")
         self.audio_process = None
         self.audio_enabled = True  # Toggle for 40hz beat
         
@@ -58,7 +61,7 @@ class StudyTimer:
         self.session_start_time = None  # Track when current session started
         
         # Data collection
-        self.data_dir = "data"
+        self.data_dir = os.path.join(BASE_DIR, "data")
         self.today = datetime.now().strftime("%Y-%m-%d")
         self.data_file = os.path.join(self.data_dir, "data.json")
         self.load_data()
