@@ -5,6 +5,7 @@ Supports both 50/10 minute and 25/5 minute study/break intervals
 Tracks study sessions and total study time per day
 """
 
+import math
 import time
 import threading
 import tkinter as tk
@@ -43,7 +44,8 @@ class StudyTimer:
         self.is_study_time = True 
         
         self.time_remaining = self.study_duration * 60  # seconds
-        self.timer_thread = None
+        self.end_time = None  # time.monotonic() value when the countdown hits 0
+        self.tick_id = None   # pending root.after() id for the next tick
         self.sound_thread = None 
         self.playing_sound = False # indicates whether the sound is playing
         
@@ -209,11 +211,9 @@ class StudyTimer:
         if self.is_running:
             return
         
-        # Wait for any existing timer thread to finish before starting a new one
-        if self.timer_thread is not None and self.timer_thread.is_alive():
-            # Wait up to 2 seconds for the thread to exit (enough time to finish current sleep)
-            self.timer_thread.join(timeout=2.0)
-        
+        # Drop any tick left over from a previous run
+        self.cancel_tick()
+
         self.is_running = True
         self.start_button.config(text="Pause")
         
@@ -229,11 +229,15 @@ class StudyTimer:
         if self.is_study_time:
             self.break_button.grid()
         
-        self.timer_thread = threading.Thread(target=self.timer_loop, daemon=True)
-        self.timer_thread.start()
-    
+        # Count down against a fixed end time so the timer doesn't drift
+        self.end_time = time.monotonic() + self.time_remaining
+        self.tick_id = self.root.after(200, self.tick)
+
     def pause_timer(self):
         """Pause the timer"""
+        if self.is_running:
+            self.time_remaining = self.seconds_left()
+        self.cancel_tick()
         self.is_running = False
         self.start_button.config(text="Start")
         self.break_button.grid_remove()
@@ -307,18 +311,29 @@ class StudyTimer:
         self.stop_audio()
         self.update_display()
     
-    def timer_loop(self):
-        """Main timer loop running in separate thread"""
-        while self.is_running and self.time_remaining > 0:
-            time.sleep(1)
-            if self.is_running:
-                self.time_remaining -= 1
-                self.root.after(0, self.update_display)
-        
-        # Timer completed - call completion handler
+    def seconds_left(self):
+        """Whole seconds until end_time, rounded up so 25:00 shows for the first second"""
+        return max(0, math.ceil(self.end_time - time.monotonic()))
+
+    def tick(self):
+        """Update the countdown. Runs on the Tk main loop via root.after()"""
+        self.tick_id = None
+        if not self.is_running:
+            return
+        self.time_remaining = self.seconds_left()
+        self.update_display()
         if self.time_remaining == 0:
-            self.root.after(0, self.timer_complete)
-    
+            self.timer_complete()
+        else:
+            # Check a few times a second so the display never lags a whole second
+            self.tick_id = self.root.after(200, self.tick)
+
+    def cancel_tick(self):
+        """Cancel the pending tick, if any"""
+        if self.tick_id is not None:
+            self.root.after_cancel(self.tick_id)
+            self.tick_id = None
+
     def timer_complete(self):
         """Handle timer completion"""
         self.is_running = False
@@ -518,6 +533,7 @@ class StudyTimer:
     def on_closing(self):
         """Handle window closing - stop all sounds and threads"""
         self.is_running = False
+        self.cancel_tick()
         self.playing_sound = False
         self.stop_audio()
         self.save_data()
