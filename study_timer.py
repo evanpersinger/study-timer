@@ -216,7 +216,11 @@ class StudyTimer:
         
         self.is_running = True
         self.start_button.config(text="Pause")
-        
+
+        # Starting the timer acknowledges any alarm that is still ringing
+        self.stop_sound()
+        self.study_button.grid_remove()
+
         # Handle study session audio
         if self.is_study_time:
             # Set session start time if starting a fresh study session
