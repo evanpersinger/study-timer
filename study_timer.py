@@ -27,7 +27,7 @@ class StudyTimer:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("")  # Remove duplicate title
-        self.root.geometry("440x320")
+        self.root.geometry("440x355")
         self.root.resizable(False, False)
         
         # Set dark theme colors
@@ -135,6 +135,10 @@ class StudyTimer:
         reference_frame.bind("<Leave>", lambda e: self.reference_label.config(bg='black'))
         self.break_timer_label = ttk.Label(timer_frame, text="05:00", font=("Arial", 32, "bold"))
         self.break_timer_label.grid(row=1, column=1, padx=(20, 0))
+
+        # Today's progress
+        self.progress_label = ttk.Label(main_frame, font=("Arial", 12))
+        self.progress_label.grid(row=2, column=0, columnspan=2, pady=(0, 15))
 
         # Preset buttons
         preset_frame = ttk.Frame(main_frame)
@@ -558,6 +562,8 @@ class StudyTimer:
     def update_display(self):
         """Update the timer display"""
         self.apply_background()
+        self.progress_label.config(
+            text=f"Today: {round(self.session_count, 2):g} sessions · {self.total_study_time:.0f} min")
         if self.is_study_time:
             # Study mode - show study countdown on left, break duration on right
             minutes = int(self.time_remaining // 60)
