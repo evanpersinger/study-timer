@@ -456,9 +456,10 @@ class StudyTimer:
     def add_partial_session_time(self):
         """Add partial session time to total study time if in study mode"""
         if self.is_study_time and self.session_start_time is not None:
-            # Calculate how much study time was completed
-            elapsed_time = time.time() - self.session_start_time
-            elapsed_minutes = elapsed_time / 60
+            # Calculate how much study time was completed from the countdown,
+            # so time spent paused is not counted
+            elapsed_seconds = self.study_duration * 60 - self.time_remaining
+            elapsed_minutes = max(0, elapsed_seconds) / 60
             
             # Add to total study time
             self.total_study_time += elapsed_minutes
