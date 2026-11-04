@@ -520,6 +520,8 @@ class StudyTimer:
         self.is_running = False
         self.playing_sound = False
         self.stop_audio()
+        # Keep any in-progress study time (this also saves)
+        self.add_partial_session_time()
         self.save_data()
         self.root.destroy()
 
