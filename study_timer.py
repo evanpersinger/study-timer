@@ -336,6 +336,7 @@ class StudyTimer:
         
         if self.is_study_time:
             # Study session completed
+            self.check_new_day()
             self.session_count += 1
             self.total_study_time += self.study_duration
             self.save_data()
@@ -463,8 +464,18 @@ class StudyTimer:
                 except:
                     pass
     
+    def check_new_day(self):
+        """Start fresh totals if the date changed while the app was open"""
+        today = datetime.now().strftime("%Y-%m-%d")
+        if today != self.today:
+            # The previous day's totals were already saved under its own date
+            self.today = today
+            self.session_count = 0
+            self.total_study_time = 0
+
     def add_partial_session_time(self):
         """Add partial session time to total study time if in study mode"""
+        self.check_new_day()
         if self.is_study_time and self.session_start_time is not None:
             # Calculate how much study time was completed from the countdown,
             # so time spent paused is not counted
@@ -506,6 +517,7 @@ class StudyTimer:
     
     def save_data(self):
         """Save today's study data to file"""
+        self.check_new_day()
         try:
             # Load existing data
             all_data = {}
