@@ -176,6 +176,8 @@ class StudyTimer:
     def set_25_5(self):
         """Set timer to 25 minute study, 5 minute break"""
         if not self.is_running:
+            # Credit time studied so far before the duration changes
+            self.add_partial_session_time()
             self.study_duration = 25
             self.break_duration = 5
             self.reset_timer()
@@ -183,6 +185,8 @@ class StudyTimer:
     def set_50_10(self):
         """Set timer to 50 minute study, 10 minute break"""
         if not self.is_running:
+            # Credit time studied so far before the duration changes
+            self.add_partial_session_time()
             self.study_duration = 50
             self.break_duration = 10
             self.reset_timer()
@@ -190,6 +194,8 @@ class StudyTimer:
     def set_test(self):
         """Set timer to 5 second study, 5 second break (TEST MODE)"""
         if not self.is_running:
+            # Credit time studied so far before the duration changes
+            self.add_partial_session_time()
             self.study_duration = 5/60  # 5 seconds (5/60 minutes)
             self.break_duration = 5/60  # 5 seconds (5/60 minutes)
             self.reset_timer()
