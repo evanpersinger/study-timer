@@ -68,7 +68,7 @@ echo '{}' > data/data.json
 
 ### Data Integrity
 - The app automatically creates the data directory if it doesn't exist
-- If the data file becomes corrupted, the app starts at 0 for the day but can't save until you fix or reset the file
+- If the data file becomes corrupted, the app starts at 0 for the day. On the next save it renames the bad file to `data.json.bak-<timestamp>` and writes a fresh `data.json`. Earlier days stay in the backup until you merge them back by hand
 
 ## Privacy
 
