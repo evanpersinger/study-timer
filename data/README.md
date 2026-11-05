@@ -9,22 +9,17 @@ All daily data is stored in a single JSON file:
 
 ## Getting Started
 
-1. **Copy the template file (first time only):**
-   ```bash
-   cp data/data_example.json data/data.json
-   ```
+Just run the Study Timer:
+```bash
+uv run study_timer.py
+```
 
-2. **Run the Study Timer:**
-   ```bash
-   uv run study_timer.py
-   ```
-
-The app will automatically create and use your personal `data.json` file for tracking your study sessions. No manual setup required after the first run!
+The app creates `data.json` the first time it saves, so there's no setup.
 
 ## Files in this Directory
 
-- `data_example.json` - Template file showing the expected data structure
-- `data.json` - Your personal study data (created when you copy the template)
+- `data_example.json` - Example showing the data structure (for reference only, don't copy it into `data.json` or its sample day ends up in your history)
+- `data.json` - Your personal study data (created automatically)
 
 ## Data Structure
 

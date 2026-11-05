@@ -21,7 +21,6 @@ A Pomodoro-style study timer built with Python and tkinter, with an optional 40H
 
 ```bash
 cd study-timer
-cp data/data_example.json data/data.json   # first time only
 uv run study_timer.py
 ```
 
