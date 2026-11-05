@@ -544,9 +544,15 @@ class StudyTimer:
             # Load existing data
             all_data = {}
             if os.path.exists(self.data_file):
-                with open(self.data_file, 'r') as f:
-                    all_data = json.load(f)
-            
+                try:
+                    with open(self.data_file, 'r') as f:
+                        all_data = json.load(f)
+                except json.JSONDecodeError as e:
+                    # Keep the unreadable file as a backup so this save can go through
+                    backup = f"{self.data_file}.bak-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+                    os.rename(self.data_file, backup)
+                    print(f"Data file was invalid JSON ({e}), moved it to {backup}")
+
             # Update today's data (round total_study_time to 2 decimal places)
             all_data[self.today] = {
                 'session_count': round(self.session_count, 2),

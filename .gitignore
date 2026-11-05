@@ -7,7 +7,7 @@ __pycache__/
 .ruff_cache/
 .mypy_cache/
 .python-version
-data/data.json
+data/data.json*
 issues.txt
 .cache
 
